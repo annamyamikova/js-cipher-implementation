@@ -1,4 +1,4 @@
-let alphabet = {
+const alphabet = {
   "<": 0,
   ">": 1,
   "{": 2,
@@ -99,124 +99,184 @@ let alphabet = {
   "9": 97,
   "0": 98,
   " ": 99,
-}
+};
 
 let zeroIndex = [];
 
-function main(){
-  let p = 113;
-  let q = 257;
-  let n = p * q;
-  let eulerFunction = (p - 1)*(q - 1);
+function main() {
+  const p = 113;
+  const q = 257;
+  const n = p * q;
+  const eulerFunction = (p - 1)*(q - 1);
+
   let plainText = prompt('Введите открытый текст: ');
 
-  let encryptedArray = textToArrayOfSymbols(plainText, alphabet);
-  let encryptedBlocks = arrayOfSymbolsToEncBlocks(encryptedArray, n);
-  let keys = getKey(eulerFunction);
-  let E = keys[0];
-  let D = keys[1];
-  console.log("E = " + E + ", D = " + D);
-  let C = encryptionFormula(encryptedBlocks, E, n);
-  let chipherText = getRSAText(C);
-  console.log("Шифротекст - " + chipherText);
+  const encryptedArray = textToArrayOfSymbols(plainText, alphabet);
+  const encryptedBlocks = arrayOfSymbolsToEncBlocks(encryptedArray, n);
+  const keys = getKey(eulerFunction);
+  const E = keys[0];
+  const D = keys[1];
 
-  let decryptedArray = textToArrayOfSymbols(chipherText, alphabet);
-  let decryptedBlocks = arrayOfSymbolsToBlocks(decryptedArray, n);
-  let M = decryptionFormula(decryptedBlocks, D, n);
+  console.log("E = " + E + ", D = " + D);
+
+  const C = encryptionFormula(encryptedBlocks, E, n);
+  const cipherText = getRSAText(C);
+  console.log("Шифротекст - " + cipherText);
+
+  const decryptedArray = textToArrayOfSymbols(cipherText, alphabet);
+  const decryptedBlocks = arrayOfSymbolsToBlocks(decryptedArray, n);
+  const M = decryptionFormula(decryptedBlocks, D, n);
+
   plainText = getRSAText(M);
+
   console.log("Исходный текст - " + plainText);
 }
 
-let textToArrayOfSymbols = (text, alphabet) => {
-  return text.split('').map((i) => {for(key in alphabet){ if (i == key) {return i=String(alphabet[key]).padStart(2, "0")}}});
-}
+const textToArrayOfSymbols = (text, alphabet) => {
+  return text.split('').map((i) => {
+    for (let key in alphabet) {
+      if (i === key) {
+        i = String(alphabet[key]).padStart(2, "0");
 
-let arrayOfSymbolsToBlocks = (array, n) => {
+        return i;
+      }
+    }
+  });
+};
+
+const arrayOfSymbolsToBlocks = (array, n) => {
   let blocks = [];
   let i = 0, substr = 0;
-  str = array.join('');
+  let str = array.join('');
 
-  while (str != ""){
-    while(+str.slice(0,substr+1) < n && substr < String(n).length+1){
-      blocks[i] = str.slice(0,substr+1);
+  while (str !== "") {
+    while (Number(str.slice(0, substr + 1)) < n && substr < String(n).length + 1) {
+      blocks[i] = str.slice(0, substr + 1);
       substr++;
     }
+
     str = str.replace(str.slice(0,substr), "");
-    i++;
+    i += 1;
     substr = 0;
   }
-  return blocks;
-}
 
-let encryptionFormula = (blocks, e, n) => {
+  return blocks;
+};
+
+const encryptionFormula = (blocks, e, n) => {
   let C = "";
+
   for (let m = 0; m < blocks.length; m++){
     let str = blocks[m];
-    if(str[0] == "0") zeroIndex[m] = 1; else zeroIndex[m] = null;
+
+    if (str[0] === "0") {
+      zeroIndex[m] = 1;
+    } else {
+      zeroIndex[m] = null;
+    }
+
     C+= String(Number((BigInt(blocks[m]) ** BigInt(e)) % BigInt(n))).padStart(6, "0");
   }
-  return C;
-}
 
-let decryptionFormula = (blocks, d, n) => {
+  return C;
+};
+
+const decryptionFormula = (blocks, d, n) => {
   let M = "";
-  for (let c = 0; c < blocks.length; c++){
-    if(zeroIndex[c]) M+="0";
+
+  for (let c = 0; c < blocks.length; c++) {
+    if (zeroIndex[c]) {
+      M+="0";
+    }
+
     M+= String(Number((BigInt(blocks[c]) ** BigInt(d)) % BigInt(n)));
   }
+
   return M;
-}
+};
 
-let getRSAText = (strOfNumbers) => {
-  return strOfNumbers.match(/.{1,2}/g).map((i) => {for(key in alphabet){if (i == alphabet[key]) {return i=key}}}).join('');
-}
+const getRSAText = (strOfNumbers) => {
+  return strOfNumbers.match(/.{1,2}/g).map((i) => {
+    for (let key in alphabet) {
+      if (i === alphabet[key]) {
+        i = key;
 
-let getKey = (eulerFunction) => {
+        return i;
+      }
+    }
+  }).join('');
+};
+
+const getKey = (eulerFunction) => {
   let count = 0;
-  while (count < 3 || !count) count = prompt('Введите кол-во пар ключей, которые вы хотите получить на выбор(не менее 3-х): ');
+
+  while (count < 3 || !count) {
+    count = prompt('Введите кол-во пар ключей, которые вы хотите получить на выбор(не менее 3-х): ');
+  }
+
   let map = new Map();
   let E, D;
+
   console.log("----------------------------------");
   console.log("|  Номер пар. {E; n}, {D; n}     |");
   console.log("----------------------------------");
-  for (let i = 1; i<=count; i++){
+
+  for (let i = 1; i <= count; i++) {
     E = getRandomInt(eulerFunction);
     D = extendedEeuclid(E, eulerFunction)[1];
-    while (D < 0) D += eulerFunction
+
+    while (D < 0) {
+      D += eulerFunction;
+    }
+
     map.set(i, [E, D]);
     console.log(i + ". {" + E + "; "+eulerFunction +"}, {" + D + "; " + eulerFunction + "}");
   }
+
   console.log("----------------------------------");
 
   let numberOfKey = -1;
-  while (numberOfKey <= 0 || ! numberOfKey || numberOfKey > count) numberOfKey = prompt('Введите номер пары ключей: ');
+  while (numberOfKey <= 0 || ! numberOfKey || numberOfKey > count) {
+    numberOfKey = prompt('Введите номер пары ключей: ');
+  }
 
   return map.get(+numberOfKey);
-}
+};
 
-let getRandomInt = (eulerFunction) => {
+const getRandomInt = (eulerFunction) => {
   let E = Math.floor(Math.random() * Math.floor(eulerFunction*10));
-  while (NOD(E, eulerFunction) != 1 || !isPrime(E) || E < eulerFunction){
+
+  while (NOD(E, eulerFunction) !== 1 || !isPrime(E) || E < eulerFunction) {
     E = Math.floor(Math.random() * Math.floor(eulerFunction*10));
   }
+
   return E;
 }
 
-let NOD = (x, y) => {
-  if (y > x) return NOD(y, x);
-  if (!y) return x;
+const NOD = (x, y) => {
+  if (y > x) {
+    return NOD(y, x);
+  }
+
+  if (!y) {
+    return x;
+  }
+
   return NOD(y, x % y);
 }
 
-const isPrime = num => {
-  for(let i = 2, s = Math.sqrt(num); i <= s; i++)
+const isPrime = (num) => {
+  for(let i = 2, s = Math.sqrt(num); i <= s; i++) {
     if(num % i === 0) return false;
-  return num > 1;
-}
+  }
 
-let extendedEeuclid = (a, b) => {
+  return num > 1;
+};
+
+const extendedEeuclid = (a, b) => {
   a = +a;
   b = +b;
+
   if (a !== a || b !== b) {
     return [NaN, NaN, NaN];
   }
@@ -228,13 +288,15 @@ let extendedEeuclid = (a, b) => {
   if ((a % 1 !== 0) || (b % 1 !== 0)) {
     return false;
   }
-  var signX = (a < 0) ? -1 : 1,
+
+  let signX = (a < 0) ? -1 : 1,
     signY = (b < 0) ? -1 : 1,
     x = 0,
     y = 1,
     u = 1,
     v = 0,
     q, r, m, n;
+
   a = Math.abs(a);
   b = Math.abs(b);
 
@@ -250,5 +312,6 @@ let extendedEeuclid = (a, b) => {
     u = m;
     v = n;
   }
+
   return [b, signX * x, signY * y];
 }
