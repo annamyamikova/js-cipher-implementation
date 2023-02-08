@@ -1,7 +1,7 @@
 const primeFactorization = (number, result) => {
-  var result = (result || []);
-  var root = Math.sqrt(number);
-  var x = 2;
+  let _result = (result || []);
+  let root = Math.sqrt(number);
+  let x = 2;
 
   if (number % x) {
     x = 3;
@@ -11,9 +11,9 @@ const primeFactorization = (number, result) => {
 
   x = (x <= root) ? x : number;
 
-  result.push(x);
+  _result.push(x);
 
-  return (x === number) ? result : primeFactorization((number / x), result);
+  return (x === number) ? _result : primeFactorization((number / x), _result);
 }
 
 const getPrivateKey = (E, n) => {
@@ -44,9 +44,9 @@ const extendedEeuclid = (a, b) => {
   if ((a % 1 !== 0) || (b % 1 !== 0)) {
     return false;
   }
-  var signX = (a < 0) ? -1 : 1,
-    signY = (b < 0) ? -1 : 1,
-    x = 0,
+  const signX = (a < 0) ? -1 : 1,
+    signY = (b < 0) ? -1 : 1;
+    let x = 0,
     y = 1,
     u = 1,
     v = 0,
