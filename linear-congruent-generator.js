@@ -7,17 +7,27 @@ let parametrs = {
 
 function generatingPseudorandomSequence(a, c, m, x0){
   return function x(n) {
-    if (n < 0) return null;
-    if (n == 0) return x0;
-    return (n == 1) ? (a*x0 + c) % m : (a*x(n-1) + c) % m;
+    if (n < 0) {
+      return null;
+    }
+
+    if (n === 0) {
+      return x0;
+    }
+
+    return (n === 1) ? (a * x0 + c) % m : (a * x(n - 1) + c) % m;
   }
 }
 
 let _x = generatingPseudorandomSequence(parametrs.a, parametrs.c, parametrs.m, parametrs.x0);
 
-function getLengthOfPeriodDec(){
+function getLengthOfPeriodDec() {
   let n = 1;
-  while(_x(n) != parametrs.x0) n++;
+
+  while(_x(n) !== parametrs.x0) {
+    n += 1;
+  }
+
   return n;
 }
 
@@ -28,21 +38,23 @@ function getLengthOfPeriodBit(){
 function getCountOfEvenAndOddNum(n) {
   let even = 0;
   let odd = 0;
-  while(n != 0){
-    (_x(n) % 2 == 0) ? even++ : odd++;
+  while(n !== 0) {
+    (_x(n) % 2 === 0) ? even++ : odd++;
     n--;
   }
   return {even, odd};
 }
 
-function getCountOfZeroAndOnes(n){
+function getCountOfZeroAndOnes(n) {
   let zeros = 0;
   let ones = 0;
-  while(n != 0){
+
+  while(n !== 0) {
     ones += [..._x(n).toString(2)].reduce((acc, n) => acc + (n === '1'), 0);
     zeros += 8 - [..._x(n).toString(2)].reduce((acc, n) => acc + (n === '1'), 0);
-    n--;
+    n -= 1;
   }
+
   return {ones, zeros}
 }
 
