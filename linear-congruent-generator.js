@@ -1,4 +1,4 @@
-let parametrs = {
+const parametrs = {
   a: 37,
   c: 9,
   m: 213,
@@ -21,7 +21,7 @@ function generatingPseudorandomSequence(a, c, m, x0){
 
 let _x = generatingPseudorandomSequence(parametrs.a, parametrs.c, parametrs.m, parametrs.x0);
 
-function getLengthOfPeriodDec() {
+const getLengthOfPeriodDec = () => {
   let n = 1;
 
   while(_x(n) !== parametrs.x0) {
@@ -31,21 +31,28 @@ function getLengthOfPeriodDec() {
   return n;
 }
 
-function getLengthOfPeriodBit(){
+const getLengthOfPeriodBit = () => {
   return getLengthOfPeriodDec() * 8;
 }
 
-function getCountOfEvenAndOddNum(n) {
+const getCountOfEvenAndOddNum = (n) => {
   let even = 0;
   let odd = 0;
+
   while(n !== 0) {
-    (_x(n) % 2 === 0) ? even++ : odd++;
-    n--;
+    if (_x(n) % 2 === 0) {
+      even += 1;
+    } else {
+      odd += 1;
+    }
+
+    n -= 1;
   }
+
   return {even, odd};
 }
 
-function getCountOfZeroAndOnes(n) {
+const getCountOfZeroAndOnes = (n) => {
   let zeros = 0;
   let ones = 0;
 
@@ -55,7 +62,7 @@ function getCountOfZeroAndOnes(n) {
     n -= 1;
   }
 
-  return {ones, zeros}
+  return {ones, zeros};
 }
 
 _n = getLengthOfPeriodDec();
