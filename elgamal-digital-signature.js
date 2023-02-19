@@ -1,4 +1,4 @@
-let main = () => {
+const main = () => {
   //signature generation
   let p = 113;
   let g = 5;
@@ -21,11 +21,11 @@ let main = () => {
   console.log("(y^r)*(r^s) mod p = (" + y + "^" + r + ")*(" + r + "^" + s + ") mod " + p + " = " + leftSide);
   let rightSide = Number((BigInt(g) ** BigInt(h)) % BigInt(p));
   console.log("(g^h) mod p = (" + g + "^" + h + ") mod " + p + " = " + rightSide);
-  if (leftSide == rightSide) console.log("Цифровая подпись прошла проверку");
+  if (leftSide === rightSide) console.log("Цифровая подпись прошла проверку");
   else console.log("Цифровая подпись не прошла проверку");
 }
 
-let extendedEeuclid = (a, b) => {
+const extendedEeuclid = (a, b) => {
   a = +a;
   b = +b;
   if (a !== a || b !== b) {
@@ -64,7 +64,7 @@ let extendedEeuclid = (a, b) => {
   return [b, signX * x, signY * y];
 }
 
-let NOD = (x, y) => {
+const NOD = (x, y) => {
   if (y > x) return NOD(y, x);
   if (!y) return x;
   return NOD(y, x % y);
@@ -76,34 +76,34 @@ const isPrime = num => {
   return num > 1;
 }
 
-let getRandomInt = max => {
+const getRandomInt = max => {
   let randomNumber = -1;
-  while (randomNumber<0 || NOD(randomNumber, max) != 1 || !isPrime(randomNumber)){
+  while (randomNumber<0 || NOD(randomNumber, max) !== 1 || !isPrime(randomNumber)){
     randomNumber = Math.floor(Math.random() * Math.floor(max));
   }
   return randomNumber;
 }
 
-let findCRC = (number, g_x) => {
+const findCRC = (number, g_x) => {
   let size;
   let substr = "";
   let str = number.toString(2);
   str += '0'.repeat(g_x.length);
 
-  while(str != ""){
+  while(str !== ""){
     do {
       size = g_x.length - substr.length;
       substr += str.slice(0, size);
       substr = parseInt(substr, 2).toString(2);
       str = str.replace(str.slice(0,size), "");
-    } while (substr.length != g_x.length && str != "");
-    if (substr.length == g_x.length) {
+    } while (substr.length !== g_x.length && str !== "");
+    if (substr.length === g_x.length) {
       substr = (parseInt(substr, 2) ^ parseInt(g_x, 2)).toString(2);
-      if (str == "") return substr;
+      if (str === "") return substr;
     } else return(substr);
   }
 }
 
-let getM = plainText => {
+const getM = plainText => {
   return parseInt(plainText.split('').map((a) => {return a.charCodeAt(0).toString(2).padStart(8, "0")}).join(''), 2);
 }
